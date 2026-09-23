@@ -15,3 +15,4 @@ Chronologisches Protokoll der Etappen, Prüfungen und Restore-Punkte.
 | 2026-09-23 | 6 | Finaler Browser-Smoke-Test auf Endstand-Build | 15/15 grün, keine Konsolenfehler | – |
 | 2026-09-23 | 6 | Randfall-Test Neustart während rollender Kugeln | 78 Tests grün | `4bfe8d0` |
 | 2026-09-23 | 6 | Grammatik der Du-Meldungen korrigiert + Texttests, Doku-Abschluss | 80 Tests grün, Build ok, Browser-Kurzprüfung ok | Abschluss-Commit |
+| 2026-09-23 | – | Menüs passen auf Handybreite (CSS `min()`); Spiel als privates claude.ai-Artifact veröffentlicht (Build mit eingebettetem CSS/JS, keine externen Ressourcen): https://claude.ai/artifact/UYc4DGZB7LwvUu5268eyqu | 80 Tests grün, Build ok, lokale Prüfung 1280/400 px ohne Fehler | folgt |

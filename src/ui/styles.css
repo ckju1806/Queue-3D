@@ -468,12 +468,12 @@ label,
 }
 
 .menu-panel {
-  width: 420px;
+  width: min(420px, 100%);
   text-align: center;
 }
 
 .menu-panel.small {
-  width: 360px;
+  width: min(360px, 100%);
 }
 
 h1 {
