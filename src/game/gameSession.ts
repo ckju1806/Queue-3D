@@ -127,6 +127,11 @@ export class GameSession {
     return this._state;
   }
 
+  /** Zustand für die Darstellung: während der Pause der Zustand davor. */
+  get displayState(): SessionState {
+    return this._state === 'paused' && this.pausedFrom ? this.pausedFrom : this._state;
+  }
+
   private setState(next: SessionState): void {
     const previous = this._state;
     if (previous === next) return;
@@ -172,6 +177,15 @@ export class GameSession {
     this.pausedFrom = null;
     this.setupRack();
     this.emit({ type: 'gameStarted', mode: this.mode });
+  }
+
+  /** Aufgebauter Tisch als Hintergrund für das Hauptmenü (ohne Spielstart). */
+  prepareShowcase(): void {
+    if (this._state !== 'menu') return;
+    this.world.clear();
+    for (const p of createRack(this.geometry, this.world.ballRadius, this.rng)) this.world.placeBall(p.id, p.x, p.y);
+    const cue = defaultCuePosition(this.geometry);
+    this.world.placeBall(CUE_BALL, cue.x, cue.y);
   }
 
   quitToMenu(): void {
@@ -234,7 +248,8 @@ export class GameSession {
 
   /** Position der Weißen für die Darstellung (Vorschau bei Ball in Hand). */
   cueBallPosition(): Vec2 | null {
-    if (this._state === 'ballInHand' || (this._state === 'aiThinking' && this.canRepositionCue && this.aiTurn)) {
+    const st = this.displayState;
+    if (st === 'ballInHand' || (st === 'aiThinking' && this.canRepositionCue && this.aiTurn)) {
       return this.cuePreview;
     }
     const cue = this.world.balls[CUE_BALL];
@@ -247,7 +262,8 @@ export class GameSession {
 
   /** Zielvorschau für den aktuellen Zustand (null, wenn nicht gezielt wird). */
   aimPreview(): AimPreview | null {
-    if (this._state !== 'aiming' && this._state !== 'charging' && this._state !== 'striking') return null;
+    const st = this.displayState;
+    if (st !== 'aiming' && st !== 'charging' && st !== 'striking') return null;
     const cue = this.world.balls[CUE_BALL];
     if (!cue.onTable) return null;
     return computeAimPreview(this.world, { x: cue.x, y: cue.y }, this.aimDirection);
