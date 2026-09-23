@@ -140,7 +140,8 @@ Anstoß-Stabilität (keine Überlappungen, alle Kugeln im Tisch), Taschenaufnahm
 Sicherheitsnetz gegen verlorene Kugeln, Sperre eines zweiten Stoßes während der Bewegung, genau eine Auswertung pro Stoß,
 Gruppenzuordnung, Spielerwechsel, alle Fouls und Ball in Hand, zu früh/korrekt versenkte 8, 8 beim Anstoß,
 Platzierungsprüfung, Zielvorschau (Radius, Bande, Übereinstimmung mit der Physik), KI (nur erlaubte Ziele, Hindernisse,
-Sicherheitsstoß, Ball in Hand, Fehlergrenzen, Vorausberechnung verändert den Tisch nicht), Dreieck-Aufbau.
+Sicherheitsstoß, Ball in Hand, Fehlergrenzen, Vorausberechnung verändert den Tisch nicht), Dreieck-Aufbau,
+realistisches Aufbrechen ohne Energiezunahme, Kugelpendel-Verhalten eingefrorener Kombinationen, Neustart während rollender Kugeln.
 
 ## Technik und Architektur (Kurzfassung)
 

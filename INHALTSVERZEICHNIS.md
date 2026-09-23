@@ -32,7 +32,7 @@ Stand: 2026-09-23 · Branch `claude/pool-lounge-3d-f5v6rx`
 | `src/ui/` | Oberfläche (Menüs, HUD, Meldungen), Texte, Styles |
 | `src/audio/` | Prozedurale Web-Audio-Sounds |
 | `src/storage/` | Lokale Einstellungen (localStorage) |
-| `tests/` | Vitest-Tests (Physik, Taschen, Regeln, Session, Zielvorschau, KI, Dreieck) + Hilfsfunktionen |
+| `tests/` | Vitest-Tests (Physik, Taschen, Regeln, Session inkl. Randfälle, Zielvorschau, KI, Dreieck) + Hilfsfunktionen |
 | `scripts/` | `smoke-test.mjs` – optionaler Browser-Smoke-Test (Playwright, nicht Teil der Abhängigkeiten) |
 | `docs/` | Projektdokumentation: Planstand, Architektur, Projektdoku, Arbeitsprotokoll |
 
