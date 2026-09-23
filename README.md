@@ -141,7 +141,8 @@ Sicherheitsnetz gegen verlorene Kugeln, Sperre eines zweiten Stoßes während de
 Gruppenzuordnung, Spielerwechsel, alle Fouls und Ball in Hand, zu früh/korrekt versenkte 8, 8 beim Anstoß,
 Platzierungsprüfung, Zielvorschau (Radius, Bande, Übereinstimmung mit der Physik), KI (nur erlaubte Ziele, Hindernisse,
 Sicherheitsstoß, Ball in Hand, Fehlergrenzen, Vorausberechnung verändert den Tisch nicht), Dreieck-Aufbau,
-realistisches Aufbrechen ohne Energiezunahme, Kugelpendel-Verhalten eingefrorener Kombinationen, Neustart während rollender Kugeln.
+realistisches Aufbrechen ohne Energiezunahme, Kugelpendel-Verhalten eingefrorener Kombinationen, Neustart während rollender Kugeln,
+grammatisch korrekte deutsche Meldungen.
 
 ## Technik und Architektur (Kurzfassung)
 

@@ -35,23 +35,39 @@ export const HINT_TEXT: Record<HintKey, string> = {
   repositionNotAllowed: 'Die Weiße darf nur bei Ball in Hand versetzt werden.',
 };
 
-export function reasonText(reason: GameOverReason, shooter: string): string {
+/** Spieler in Meldungen: `you` = menschlicher Spieler im Computermodus (Anrede „Du“). */
+export interface Who {
+  name: string;
+  you: boolean;
+}
+
+const hat = (w: Who) => (w.you ? 'Du hast' : `${w.name} hat`);
+const ist = (w: Who) => (w.you ? 'Du bist' : `${w.name} ist`);
+const bleibt = (w: Who) => (w.you ? 'Du bleibst' : `${w.name} bleibt`);
+const spielt = (w: Who) => (w.you ? 'Du spielst' : `${w.name} spielt`);
+const fuer = (w: Who) => (w.you ? 'dich' : w.name);
+
+export function reasonText(reason: GameOverReason, shooter: Who): string {
   switch (reason) {
     case 'eightPocketed':
-      return `${shooter} hat die schwarze 8 regelgerecht versenkt.`;
+      return `${hat(shooter)} die schwarze 8 regelgerecht versenkt.`;
     case 'eightEarly':
-      return `${shooter} hat die schwarze 8 zu früh versenkt.`;
+      return `${hat(shooter)} die schwarze 8 zu früh versenkt.`;
     case 'eightWithFoul':
-      return `${shooter} hat die schwarze 8 mit einem Foul versenkt.`;
+      return `${hat(shooter)} die schwarze 8 mit einem Foul versenkt.`;
   }
+}
+
+export function breakText(who: Who): string {
+  return `${hat(who)} den Anstoß.`;
 }
 
 const plural = (n: number, one: string, many: string) => (n === 1 ? `1 ${one}` : `${n} ${many}`);
 
 /** Meldungen nach einem ausgewerteten 8-Ball-Stoß. */
-export function outcomeMessages(outcome: ShotOutcome, names: [string, string], tableOpenAfter: boolean): UiMessage[] {
-  const shooter = names[outcome.shooter];
-  const next = names[outcome.nextPlayer];
+export function outcomeMessages(outcome: ShotOutcome, players: [Who, Who], tableOpenAfter: boolean): UiMessage[] {
+  const shooter = players[outcome.shooter];
+  const next = players[outcome.nextPlayer];
   const out: UiMessage[] = [];
   if (outcome.gameOver) return out;
 
@@ -66,7 +82,7 @@ export function outcomeMessages(outcome: ShotOutcome, names: [string, string], t
   for (const f of outcome.fouls) out.push({ text: FOUL_TEXT[f], tone: 'foul' });
 
   if (outcome.assignedGroup) {
-    out.push({ text: `${shooter} spielt ${GROUP_LONG[outcome.assignedGroup]}.`, tone: 'success' });
+    out.push({ text: `${spielt(shooter)} ${GROUP_LONG[outcome.assignedGroup]}.`, tone: 'success' });
   } else if (!outcome.wasBreak && outcome.fouls.length === 0 && tableOpenAfter) {
     const solids = outcome.pocketed.filter((id) => groupOf(id) === 'solids').length;
     const stripes = outcome.pocketed.filter((id) => groupOf(id) === 'stripes').length;
@@ -76,13 +92,13 @@ export function outcomeMessages(outcome: ShotOutcome, names: [string, string], t
   }
 
   if (outcome.ballInHand) {
-    out.push({ text: `Ball in Hand für ${next}.`, tone: 'turn' });
+    out.push({ text: `Ball in Hand für ${fuer(next)}.`, tone: 'turn' });
   } else if (outcome.continueTurn) {
-    out.push({ text: `${shooter} bleibt am Zug.`, tone: 'success' });
+    out.push({ text: `${bleibt(shooter)} am Zug.`, tone: 'success' });
   } else if (outcome.pocketed.length > 0 && !outcome.wasBreak) {
-    out.push({ text: `Keine eigene Kugel versenkt – ${next} ist am Zug.`, tone: 'turn' });
+    out.push({ text: `Keine eigene Kugel versenkt – ${ist(next).replace(/^Du/, 'du')} am Zug.`, tone: 'turn' });
   } else {
-    out.push({ text: `Spielerwechsel: ${next} ist am Zug.`, tone: 'turn' });
+    out.push({ text: `Spielerwechsel: ${ist(next)} am Zug.`, tone: 'turn' });
   }
   return out;
 }

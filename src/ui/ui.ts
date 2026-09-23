@@ -6,6 +6,7 @@ import type { Difficulty, GameMode } from '../game/types';
 import type { ViewMode } from '../render/cameraController';
 import type { Settings } from '../storage/settings';
 import {
+  breakText,
   CONTROLS,
   GROUP_LABEL,
   HINT_TEXT,
@@ -15,6 +16,7 @@ import {
   RULES,
   statusText,
   trainingMessages,
+  type Who,
 } from './texts';
 
 export interface UiCallbacks {
@@ -119,7 +121,7 @@ export class GameUI {
           this.gameOverInfo = null;
           this.clearToasts();
           if (e.mode === 'training') this.toast('Training: Weiße im Anstoßraum platzieren und losspielen.', 'info');
-          else this.toast(`Anstoß: ${session.players[session.currentPlayer].name}`, 'turn');
+          else this.toast(breakText(this.who(session.currentPlayer)), 'turn');
           break;
         case 'physics':
           if (e.event.type === 'pocket' && e.event.ball !== CUE_BALL && !this.pocketedOrder.includes(e.event.ball)) {
@@ -127,9 +129,8 @@ export class GameUI {
           }
           break;
         case 'shotEvaluated': {
-          const names: [string, string] = [session.players[0].name, session.players[1].name];
           const open = session.rules.groups[0] === null;
-          for (const m of outcomeMessages(e.outcome, names, open)) this.toast(m.text, m.tone);
+          for (const m of outcomeMessages(e.outcome, [this.who(0), this.who(1)], open)) this.toast(m.text, m.tone);
           if (e.outcome.fouls.length > 0) this.audio.playNotice();
           break;
         }
@@ -423,7 +424,7 @@ export class GameUI {
     let title: string;
     if (s.mode === 'vsComputer') title = winner === 0 ? 'Du hast gewonnen!' : 'Der Computer gewinnt.';
     else title = `${names[winner].name} gewinnt!`;
-    this.gameOverInfo = { title, reason: reasonText(reason, names[shooter].name) };
+    this.gameOverInfo = { title, reason: reasonText(reason, this.who(shooter)) };
     this.audio.playGameEnd(s.mode !== 'vsComputer' || winner === 0);
     this.renderStatic();
   }
@@ -453,6 +454,12 @@ export class GameUI {
           .map((i) => `<tr><td>${s.players[i].name}</td><td>${s.stats.shots[i]}</td><td>${s.stats.fouls[i]}</td></tr>`)
           .join('')}</table>`;
     }
+  }
+
+  /** Spieler für Meldungen; der Mensch im Computermodus wird mit „Du“ angesprochen. */
+  private who(i: PlayerIndex): Who {
+    const p = this.session.players[i];
+    return { name: p.name, you: this.session.mode === 'vsComputer' && p.controller === 'human' };
   }
 
   private toast(text: string, tone: MessageTone): void {

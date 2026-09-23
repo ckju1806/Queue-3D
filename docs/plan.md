@@ -54,7 +54,7 @@ mit drei Modi (Training, 2 Spieler lokal, gegen Computer Einfach/Mittel), eigene
 | 3 | Eingaben, Queue, Zielhilfe, Stärkeanzeige, UI, Platzierung | ✅ | `8d4ef2d` |
 | 4 | Regeln, Zweispielermodus, HUD, Ergebnis/Revanche + Regeltests | ✅ | `2eae690`, `8d4ef2d` |
 | 5 | Computergegner (Einfach/Mittel) + KI-Tests | ✅ | `2eae690` |
-| 6 | Audio, Einstellungen, Feinschliff, README, Abschlussprüfung | 🔄 | `395821d` ff. |
+| 6 | Audio, Einstellungen, Feinschliff, README, Abschlussprüfung | ✅ | `395821d` … Abschluss-Commit |
 
 ## Wesentliche Befunde und Korrekturen während der Umsetzung
 | Befund | Nachweis | Korrektur |
@@ -66,9 +66,18 @@ mit drei Modi (Training, 2 Spieler lokal, gegen Computer Einfach/Mittel), eigene
 | Erste Gruppenauflösung (Poisson) erzeugte Energie (+40 %) und Rückprall bei Kombinationen | Neue Tests | Restitution je Kontakt einmal + Energieschranke |
 | Draufsicht durch Lampe verdeckt, Tuch zu hell | Browser-Screenshots | Lampenkörper ausblenden, Tuch/Licht angepasst |
 | Menüs erschienen erst im nächsten Frame | Smoke-Test (Pause) | UI reagiert sofort auf Zustandswechsel |
+| Taschenbecher in Draufsicht hell (massive Zarge sichtbar) | Browser-Screenshot | Zarge als Rahmen |
+| Meldungen „Du ist am Zug“, „Ball in Hand für Du“ (Grammatik) | Browser-Screenshot HUD | Du-Formen + Test `tests/texts.test.ts` |
 
-## Validierungsschritte
-1. `npm run typecheck` – keine TypeScript-Fehler.
-2. `npm test` – alle Tests grün.
-3. `npm run build` – Produktionsbuild erfolgreich.
-4. `npm run preview` + Browser-Smoke-Test (Seite lädt, keine Konsolenfehler, Training startbar, Stoß ausführbar).
+## Validierungsschritte und Ergebnisse (Abschluss)
+| # | Prüfung | Ergebnis |
+|---|---------|----------|
+| 1 | `npm run typecheck` | ✅ keine Fehler |
+| 2 | `npm test` | ✅ 80/80 Tests in 9 Dateien |
+| 3 | `npm run build` | ✅ erfolgreich (JS ≈ 661 kB, gzip ≈ 175 kB) |
+| 4 | Frischer Klon: `npm ci` bzw. `npm install` → Typecheck → Tests → Build | ✅ 0 Schwachstellen, Lockfile unverändert |
+| 5 | Browser-Smoke-Test (`npm run preview`, Playwright/Chromium, SwiftShader, `?quality=low`) | ✅ 15/15 Prüfungen, keine Konsolenfehler |
+| 6 | Sichtprüfung per Screenshots (Menü, Zielen, Aufladen, Anstoß, Draufsicht, Pause, Computerzug, HUD) | ✅ durchgeführt, Befunde behoben |
+
+Einschränkung der Prüfumgebung: Container ohne GPU → Software-Rendering (~1 s/Frame). Flüssigkeit (FPS) auf echter
+Hardware konnte hier **nicht** gemessen werden.

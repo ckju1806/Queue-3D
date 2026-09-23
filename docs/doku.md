@@ -33,7 +33,10 @@ Versionsverwaltung über Git (Branch `claude/pool-lounge-3d-f5v6rx`). Jede Etapp
 | `69b6ecf` | Projekt-Setup und Physikkern |
 | `2eae690` | Regeln, Zustandsautomat, Zielvorschau, KI |
 | `8d4ef2d` | 3D-Darstellung, UI, Eingaben, Audio |
-| (folgend) | Feinschliff, Dokumentation, Abschlussprüfung – siehe `docs/arbeitsprotokoll.md` |
+| `395821d` | Realistischer Anstoß, sofortige Menüanzeige, Doku |
+| `c2f1b16` | Darstellungskorrekturen, Planstand |
+| `4bfe8d0` | Randfall-Test, README |
+| (Abschluss) | Grammatik der Meldungen, Doku-Abschluss – siehe `docs/arbeitsprotokoll.md` |
 
 Wiederherstellung eines Standes: `git checkout <commit>` bzw. `git revert <commit>`.
 

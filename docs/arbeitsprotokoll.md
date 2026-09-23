@@ -11,3 +11,7 @@ Chronologisches Protokoll der Etappen, Prüfungen und Restore-Punkte.
 | 2026-09-23 | 1, 3, 6 | Rendering, UI, Eingaben, Audio, Einstellungen, Einstieg | `tsc` ok, 75 Tests, `npm run build` ok | `8d4ef2d` |
 | 2026-09-23 | 6 | Browser-Smoke-Test (Playwright/SwiftShader): 11/12 grün; Befunde: Menü-Verzögerung, Lampe in Draufsicht, Tuch zu hell, schwacher Anstoß | Screenshots im Scratchpad | – |
 | 2026-09-23 | 6 | Wellenfront-Gruppenstöße + Energieschranke, UI-Sofortanzeige, Optik, Doku | 77 Tests grün | `395821d` |
+| 2026-09-23 | 6 | Darstellungskorrekturen (Zarge, CSS, Buttons), Planstand | 77 Tests grün; frischer Klon: `npm ci`/`npm install`, Tests, Build ok | `c2f1b16` |
+| 2026-09-23 | 6 | Finaler Browser-Smoke-Test auf Endstand-Build | 15/15 grün, keine Konsolenfehler | – |
+| 2026-09-23 | 6 | Randfall-Test Neustart während rollender Kugeln | 78 Tests grün | `4bfe8d0` |
+| 2026-09-23 | 6 | Grammatik der Du-Meldungen korrigiert + Texttests, Doku-Abschluss | 80 Tests grün, Build ok, Browser-Kurzprüfung ok | Abschluss-Commit |
