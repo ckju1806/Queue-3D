@@ -125,7 +125,7 @@ label,
   letter-spacing: 0.2px;
 }
 
-.turn {
+.pc-turn {
   font-size: 11px;
   color: var(--accent-2);
   text-transform: uppercase;
@@ -293,9 +293,8 @@ label,
 
 .training-bar {
   position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 12px;
+  right: 14px;
   display: flex;
   gap: 8px;
 }

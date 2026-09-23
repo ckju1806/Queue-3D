@@ -46,15 +46,26 @@ mit drei Modi (Training, 2 Spieler lokal, gegen Computer Einfach/Mittel), eigene
 | Nach jeder Etappe | Commit + Push auf `claude/pool-lounge-3d-f5v6rx` (siehe `docs/arbeitsprotokoll.md`) |
 
 ## Etappen
-| # | Etappe | Status |
-|---|--------|--------|
-| 0 | Doku-Grundgerüst, Projekt-Setup, `npm install` | 🔄 |
-| 1 | Config, Tischgeometrie, Renderer, Lounge, Tisch, Kugeln, Kamera | ⏳ |
-| 2 | Physik, Taschen, Trainingsmodus + Physiktests | ⏳ |
-| 3 | Eingaben, Queue, Zielhilfe, Stärkeanzeige, UI, Platzierung | ⏳ |
-| 4 | Regeln, Zweispielermodus, HUD, Ergebnis/Revanche + Regeltests | ⏳ |
-| 5 | Computergegner (Einfach/Mittel) + KI-Tests | ⏳ |
-| 6 | Audio, Einstellungen, Feinschliff, README, Abschlussprüfung | ⏳ |
+| # | Etappe | Status | Commit |
+|---|--------|--------|--------|
+| 0 | Doku-Grundgerüst, Projekt-Setup, `npm install` | ✅ | `69b6ecf` |
+| 1 | Config, Tischgeometrie, Renderer, Lounge, Tisch, Kugeln, Kamera | ✅ | `8d4ef2d` |
+| 2 | Physik, Taschen, Trainingsmodus + Physiktests | ✅ | `69b6ecf` |
+| 3 | Eingaben, Queue, Zielhilfe, Stärkeanzeige, UI, Platzierung | ✅ | `8d4ef2d` |
+| 4 | Regeln, Zweispielermodus, HUD, Ergebnis/Revanche + Regeltests | ✅ | `2eae690`, `8d4ef2d` |
+| 5 | Computergegner (Einfach/Mittel) + KI-Tests | ✅ | `2eae690` |
+| 6 | Audio, Einstellungen, Feinschliff, README, Abschlussprüfung | 🔄 | `395821d` ff. |
+
+## Wesentliche Befunde und Korrekturen während der Umsetzung
+| Befund | Nachweis | Korrektur |
+|---|---|---|
+| `npm install` bricht mit Vitest 4 ab (npm-Arborist, Peer-Deps) | Fehlerlog `edgesOut` | Vitest 5.0.1 |
+| Zielvorschau der Weißen wich bei fast vollem Treffer ab | Test Zielvorschau vs. Physik | Vorschau nutzt exakt die Stoßformel der Physik |
+| KI „Mittel“ zu stark (gewann fast jede Partie in 7–13 Stößen) | KI-Selbstspiel | Zielfehler 0,35° → 0,6° |
+| Anstoß brach das Dreieck kaum auf (6–7 von 15 Kugeln bewegt) | Messung + Screenshot | Wellenfront-Auflösung für Kugelgruppen |
+| Erste Gruppenauflösung (Poisson) erzeugte Energie (+40 %) und Rückprall bei Kombinationen | Neue Tests | Restitution je Kontakt einmal + Energieschranke |
+| Draufsicht durch Lampe verdeckt, Tuch zu hell | Browser-Screenshots | Lampenkörper ausblenden, Tuch/Licht angepasst |
+| Menüs erschienen erst im nächsten Frame | Smoke-Test (Pause) | UI reagiert sofort auf Zustandswechsel |
 
 ## Validierungsschritte
 1. `npm run typecheck` – keine TypeScript-Fehler.

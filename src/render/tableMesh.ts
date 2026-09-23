@@ -245,12 +245,35 @@ export function buildTable(g: TableGeometry, materials: TableMaterials): THREE.G
   group.add(spot);
 
   // --- Zarge, Sockel und Beine ---
+  // Zarge als Rahmen (nicht massiv), damit man durch die Taschenlöcher in die dunklen Becher sieht
   const apronH = D.railBottom - D.apronBottom;
-  const apron = new THREE.Mesh(new THREE.BoxGeometry(ox * 2 - 0.05, apronH, oy * 2 - 0.05), materials.darkWood);
-  apron.position.y = D.railBottom - apronH / 2;
-  apron.castShadow = true;
-  apron.receiveShadow = true;
-  group.add(apron);
+  const board = 0.05;
+  const aw = ox * 2 - 0.05;
+  const ad = oy * 2 - 0.05;
+  const boards: Array<[number, number, number, number]> = [
+    [0, -(ad - board) / 2, aw, board],
+    [0, (ad - board) / 2, aw, board],
+    [-(aw - board) / 2, 0, board, ad],
+    [(aw - board) / 2, 0, board, ad],
+  ];
+  for (const [x, z, w, d] of boards) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, apronH, d), materials.darkWood);
+    m.position.set(x, D.railBottom - apronH / 2, z);
+    m.castShadow = true;
+    m.receiveShadow = true;
+    group.add(m);
+  }
+  const floorPlate = new THREE.Mesh(
+    new THREE.BoxGeometry(aw - 0.02, 0.02, ad - 0.02),
+    new THREE.MeshStandardMaterial({ color: '#0b0706', roughness: 0.9 }),
+  );
+  floorPlate.position.y = D.apronBottom + 0.02;
+  group.add(floorPlate);
+  // Unterseite des Tuchs (Schiefer) – verhindert Durchblick von unten/seitlich
+  const slate = new THREE.Mesh(new THREE.ShapeGeometry(bedShape, 24), new THREE.MeshStandardMaterial({ color: '#0b0706', roughness: 1, side: THREE.BackSide }));
+  slate.rotation.x = -Math.PI / 2;
+  slate.position.y = -0.03;
+  group.add(slate);
   // Schattenfuge unter dem Rahmen
   const trim = new THREE.Mesh(
     new THREE.BoxGeometry(ox * 2 - 0.03, 0.02, oy * 2 - 0.03),

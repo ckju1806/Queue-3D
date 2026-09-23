@@ -568,8 +568,8 @@ export class GameUI {
     }
     const turnInfo = active
       ? s.canRepositionCue && s.displayState !== 'rolling'
-        ? '<span class="turn">Ball in Hand</span>'
-        : '<span class="turn">am Zug</span>'
+        ? '<span class="pc-turn">Ball in Hand</span>'
+        : '<span class="pc-turn">am Zug</span>'
       : '';
     return `
       <div class="player-card ${active ? 'active' : ''} ${i === 1 ? 'right' : ''}">
