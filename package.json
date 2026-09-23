@@ -4,6 +4,14 @@
   "private": true,
   "description": "Pool Lounge 3D – ein lokal spielbares 3D-Billardspiel (8-Ball) mit TypeScript, Three.js und Vite.",
   "license": "MIT",
+  "homepage": "https://ckju1806.github.io/Queue-3D/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckju1806/Queue-3D.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ckju1806/Queue-3D/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=22.12.0"

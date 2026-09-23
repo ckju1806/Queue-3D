@@ -14,6 +14,13 @@ keine externen Dienste, keine Laufzeit-Downloads.
 | Build ansehen | `npm run preview` → http://localhost:4173 |
 | Prüfungen | `npm run typecheck`, `npm test` |
 | Schwache Hardware | URL-Parameter `?quality=low` |
+| Online-Version | <https://ckju1806.github.io/Queue-3D/> (automatisch aus `main`) |
+
+## Veröffentlichung (GitHub Pages)
+- Workflow: `.github/workflows/pages.yml` – Trigger: Push auf `main` und manuell (*Actions → GitHub Pages → Run workflow*).
+- Ablauf: `npm ci` → `npm test` → `npm run build` → Upload von `dist/` → Deployment in die Umgebung `github-pages`.
+- Einmalige Einstellung (nur im GitHub-Webinterface möglich): **Settings → Pages → Build and deployment → Source: „GitHub Actions“**.
+- Rücknahme: fehlerhaften Commit auf `main` per `git revert` zurücknehmen; der Workflow veröffentlicht danach automatisch den vorherigen Stand.
 
 ## Konfiguration
 - Spielparameter: `src/config/gameConfig.ts` (Tischmaße, Kugelradius, Taschen, Reibung, Stoßzahlen, Stoßkraft, Zeitschritt).

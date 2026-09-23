@@ -1,8 +1,14 @@
 # Pool Lounge 3D
 
-Ein lokal spielbares 3D-Billardspiel (8-Ball) für den Browser – entwickelt mit **TypeScript**, **Three.js** und **Vite**.
+[![GitHub Pages](https://github.com/ckju1806/Queue-3D/actions/workflows/pages.yml/badge.svg)](https://github.com/ckju1806/Queue-3D/actions/workflows/pages.yml)
+
+Ein 3D-Billardspiel (8-Ball) für den Browser – entwickelt mit **TypeScript**, **Three.js** und **Vite**.
 Ruhige Lounge-Atmosphäre, eigene getestete Billardphysik, drei Spielmodi, deutsche Oberfläche.
 Kein Backend, keine Registrierung, keine API-Schlüssel, keine CDN-Abhängigkeiten zur Laufzeit.
+
+**[Jetzt online spielen](https://ckju1806.github.io/Queue-3D/)** · **[Spielanleitung](docs/spielanleitung.md)** · **[Änderungen](CHANGELOG.md)**
+
+![Pool Lounge 3D – Zielen auf das Dreieck](docs/bilder/03-zielen.jpg)
 
 - **Training** – freies Spielen ohne Gegner und ohne Niederlage; die Weiße kann bei ruhendem Tisch jederzeit neu platziert werden.
 - **Zwei Spieler** – abwechselnd am selben PC.
@@ -21,12 +27,19 @@ Kein Backend, keine Registrierung, keine API-Schlüssel, keine CDN-Abhängigkeit
 
 Eine Internetverbindung wird nur **einmalig** für `npm install` benötigt. Danach läuft das Spiel vollständig offline.
 
+## Online spielen (ohne Installation)
+
+Die aktuelle Version von `main` wird automatisch über **GitHub Pages** veröffentlicht:
+**<https://ckju1806.github.io/Queue-3D/>** – einfach im Browser öffnen.
+
 ## Installation (Windows)
 
 1. Node.js LTS installieren (Standardoptionen genügen).
-2. Eingabeaufforderung oder PowerShell im Projektordner öffnen
+2. Projekt herunterladen: auf GitHub **Code → Download ZIP** wählen und entpacken
+   – oder per Git: `git clone https://github.com/ckju1806/Queue-3D.git`.
+3. Eingabeaufforderung oder PowerShell im Projektordner öffnen
    (im Explorer in den Ordner wechseln, in die Adresszeile `cmd` eingeben und Enter drücken).
-3. Abhängigkeiten installieren:
+4. Abhängigkeiten installieren:
 
    ```bat
    npm install
@@ -52,6 +65,8 @@ npm run preview
 > Tipp bei schwacher Grafikhardware: `http://localhost:5173/?quality=low` (geringere Auflösung, keine Schatten).
 
 ## Steuerung
+
+Eine ausführliche, bebilderte Erklärung aller Funktionen steht in der **[Spielanleitung](docs/spielanleitung.md)**.
 
 | Eingabe | Aktion |
 |---|---|
@@ -131,8 +146,18 @@ Im Training zusätzlich kurze Vorschau der Laufrichtungen von Objektkugel und We
 | `npm run build` | Typprüfung + Produktionsbuild nach `dist/` |
 | `npm run preview` | Produktionsbuild lokal ausliefern (http://localhost:4173) |
 
+### Veröffentlichung über GitHub Pages
+
+Der Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) läuft bei jedem Push auf `main`
+(und manuell über *Actions → GitHub Pages → Run workflow*): Er installiert die Pakete (`npm ci`), führt die Tests aus,
+baut das Spiel und veröffentlicht `dist/` unter <https://ckju1806.github.io/Queue-3D/>.
+Einmalige Einstellung im Repository: **Settings → Pages → Build and deployment → Source: „GitHub Actions“**.
+
+### Weitere Werkzeuge
+
 Optional (nicht Teil von `npm test`): Browser-Smoke-Test mit Playwright, falls installiert –
 `npm run preview` starten und `node scripts/smoke-test.mjs http://localhost:4173 tmp/smoke` ausführen.
+Die Bilder der Spielanleitung erzeugt `node scripts/screenshots.mjs http://localhost:4173 docs/bilder` (ebenfalls mit Playwright).
 
 **Abgedeckte Tests** (`tests/`): gerader Kugelstoß und Impulsübertragung, schräger Stoß (90°-Regel), Anti-Tunneling bei
 extremen Geschwindigkeiten, Bandenabprall, Ausrollen durch Reibung, Bildraten-Unabhängigkeit, Begrenzung aufgestauter Zeit,

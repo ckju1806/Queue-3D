@@ -81,3 +81,12 @@ mit drei Modi (Training, 2 Spieler lokal, gegen Computer Einfach/Mittel), eigene
 
 Einschränkung der Prüfumgebung: Container ohne GPU → Software-Rendering (~1 s/Frame). Flüssigkeit (FPS) auf echter
 Hardware konnte hier **nicht** gemessen werden.
+
+## Veröffentlichung auf GitHub (2026-09-23)
+| Schritt | Status |
+|---|---|
+| Spielanleitung `docs/spielanleitung.md` mit 8 Screenshots (`docs/bilder/`, erzeugt per `scripts/screenshots.mjs`) | ✅ |
+| README: Online-Link, Titelbild, Download-Anleitung, Pages-Abschnitt; `CHANGELOG.md`; `package.json`-Metadaten | ✅ |
+| Workflow `.github/workflows/pages.yml` (npm ci → Tests → Build → Pages) | ✅ |
+| Pull Request nach `main` + Merge | 🔄 |
+| Erster Pages-Lauf (ggf. einmalig *Settings → Pages → Source: GitHub Actions*) | ⏳ |

@@ -15,4 +15,5 @@ Chronologisches Protokoll der Etappen, Prüfungen und Restore-Punkte.
 | 2026-09-23 | 6 | Finaler Browser-Smoke-Test auf Endstand-Build | 15/15 grün, keine Konsolenfehler | – |
 | 2026-09-23 | 6 | Randfall-Test Neustart während rollender Kugeln | 78 Tests grün | `4bfe8d0` |
 | 2026-09-23 | 6 | Grammatik der Du-Meldungen korrigiert + Texttests, Doku-Abschluss | 80 Tests grün, Build ok, Browser-Kurzprüfung ok | Abschluss-Commit |
-| 2026-09-23 | – | Menüs passen auf Handybreite (CSS `min()`); Spiel als privates claude.ai-Artifact veröffentlicht (Build mit eingebettetem CSS/JS, keine externen Ressourcen): https://claude.ai/artifact/UYc4DGZB7LwvUu5268eyqu | 80 Tests grün, Build ok, lokale Prüfung 1280/400 px ohne Fehler | folgt |
+| 2026-09-23 | – | Menüs passen auf Handybreite (CSS `min()`); Spiel als privates claude.ai-Artifact veröffentlicht (nur für den Besitzer sichtbar; Build mit eingebettetem CSS/JS, keine externen Ressourcen) | 80 Tests grün, Build ok, lokale Prüfung 1280/400 px ohne Fehler | `fe0021e` |
+| 2026-09-23 | GitHub | Spielanleitung mit 8 Screenshots, README (Online-Link, Download), CHANGELOG, package.json-Metadaten, Pages-Workflow | 80 Tests grün, Build ok, Workflow-YAML gültig | folgt (PR nach `main`) |

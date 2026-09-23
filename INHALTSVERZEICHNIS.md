@@ -6,7 +6,8 @@ Stand: 2026-09-23 · Branch `claude/pool-lounge-3d-f5v6rx`
 
 | Pfad | Zweck |
 |---|---|
-| `README.md` | Anleitung (Deutsch): Voraussetzungen, Installation, Start, Steuerung, Regelwerk, Tests, Einschränkungen |
+| `README.md` | Anleitung (Deutsch): Online-Link, Voraussetzungen, Installation, Start, Steuerung, Regelwerk, Tests, Einschränkungen |
+| `CHANGELOG.md` | Änderungsprotokoll (Versionen) |
 | `INHALTSVERZEICHNIS.md` | Dieses Verzeichnis der Projektstruktur |
 | `LICENSE` | MIT-Lizenz |
 | `package.json` / `package-lock.json` | npm-Skripte und exakt gepinnte Abhängigkeiten |
@@ -33,13 +34,16 @@ Stand: 2026-09-23 · Branch `claude/pool-lounge-3d-f5v6rx`
 | `src/audio/` | Prozedurale Web-Audio-Sounds |
 | `src/storage/` | Lokale Einstellungen (localStorage) |
 | `tests/` | Vitest-Tests (Physik, Taschen, Regeln, Session inkl. Randfälle, Zielvorschau, KI, Dreieck, Meldungstexte) + Hilfsfunktionen |
-| `scripts/` | `smoke-test.mjs` – optionaler Browser-Smoke-Test (Playwright, nicht Teil der Abhängigkeiten) |
+| `scripts/` | `smoke-test.mjs` – optionaler Browser-Smoke-Test; `screenshots.mjs` – erzeugt die Bilder der Spielanleitung (beide Playwright, nicht Teil der Abhängigkeiten) |
+| `.github/workflows/` | `pages.yml` – Tests, Build und Veröffentlichung über GitHub Pages bei jedem Push auf `main` |
 | `docs/` | Projektdokumentation: Planstand, Architektur, Projektdoku, Arbeitsprotokoll |
 
 ## Dokumentation (`docs/`)
 
 | Datei | Inhalt |
 |---|---|
+| `docs/spielanleitung.md` | Bebilderte Spielanleitung für Spielende |
+| `docs/bilder/` | Screenshots für die Spielanleitung (JPEG, erzeugt mit `scripts/screenshots.mjs`) |
 | `docs/plan.md` | Ziel, Kontext, Annahmen, Risiken, Restore-Punkte, Etappen, Validierung (fortlaufend) |
 | `docs/architektur.md` | Architektur, Datenfluss, Zustandsautomat, Physikmodell, KI, Rendering |
 | `docs/doku.md` | Projektdokumentation für den Betrieb: Start, Konfiguration, Zugangsdaten (keine), Backups |
