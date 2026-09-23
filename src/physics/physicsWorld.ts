@@ -15,6 +15,9 @@ import type { TableGeometry } from './tableGeometry';
 
 export const BALL_COUNT = 16;
 
+/** Kugeln mit höchstens diesem Spalt gelten beim Stoß als gleichzeitig in Kontakt. */
+const CLUSTER_TOLERANCE = 0.001;
+
 export interface BallState {
   id: number;
   x: number;
@@ -276,6 +279,11 @@ export class PhysicsWorld {
     const a = this.balls[ev.i];
     switch (ev.kind) {
       case 'ball': {
+        const cluster = this.collectCluster(ev.i, ev.j);
+        if (cluster.length > 2) {
+          this.resolveCluster(ev.i, ev.j, cluster);
+          return;
+        }
         const b = this.balls[ev.j];
         let nx = b.x - a.x;
         let ny = b.y - a.y;
@@ -311,6 +319,121 @@ export class PhysicsWorld {
       case 'pocket':
         this.pocketBall(a, ev.index);
         return;
+    }
+  }
+
+  /** Alle Kugeln, die über (Beinahe-)Kontakte mit dem stoßenden Paar verbunden sind. */
+  private collectCluster(i: number, j: number): number[] {
+    const lim = 2 * this.radius + CLUSTER_TOLERANCE;
+    const limSq = lim * lim;
+    const cluster = [i, j];
+    const inCluster = new Set(cluster);
+    for (let k = 0; k < cluster.length; k++) {
+      const a = this.balls[cluster[k]];
+      for (const b of this.balls) {
+        if (!b.onTable || inCluster.has(b.id)) continue;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        if (dx * dx + dy * dy <= limSq) {
+          inCluster.add(b.id);
+          cluster.push(b.id);
+        }
+      }
+    }
+    return cluster;
+  }
+
+  /**
+   * Stoß mehrerer sich (fast) berührender Kugeln (z. B. Anstoß ins Dreieck, eingefrorene Kombinationen).
+   *
+   * Wellenfront-Modell: In jeder Runde werden alle Kontakte, die sich GERADE annähern,
+   * gleichzeitig nach der Poisson-Hypothese aufgelöst (Kompression per Sequential Impulses,
+   * danach Restitution e · Kompressionsimpuls). Dadurch läuft der Impuls wie eine Welle
+   * durch die Gruppe: Gerade Ketten verhalten sich wie ein Kugelpendel, im Dreieck teilt
+   * sich der Impuls symmetrisch auf. Für zwei Kugeln identisch zur Einzelformel.
+   */
+  private resolveCluster(i: number, j: number, cluster: number[]): void {
+    const e = this.config.physics.ballRestitution;
+    const lim = 2 * this.radius + CLUSTER_TOLERANCE;
+    type Contact = { a: BallState; b: BallState; nx: number; ny: number; acc: number; total: number; restituted: boolean };
+    const contacts: Contact[] = [];
+    for (let x = 0; x < cluster.length; x++) {
+      for (let y = x + 1; y < cluster.length; y++) {
+        const a = this.balls[cluster[x]];
+        const b = this.balls[cluster[y]];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.hypot(dx, dy);
+        if (d > lim || d < 1e-12) continue;
+        contacts.push({ a, b, nx: dx / d, ny: dy / d, acc: 0, total: 0, restituted: false });
+      }
+    }
+    const members = cluster.map((id) => this.balls[id]);
+    const kinetic = () => members.reduce((sum, m) => sum + m.vx * m.vx + m.vy * m.vy, 0);
+    const energyBefore = kinetic();
+    const approach = (c: Contact) => (c.a.vx - c.b.vx) * c.nx + (c.a.vy - c.b.vy) * c.ny;
+    const apply = (c: Contact, dj: number) => {
+      c.total += dj;
+      c.a.vx -= dj * c.nx;
+      c.a.vy -= dj * c.ny;
+      c.b.vx += dj * c.nx;
+      c.b.vy += dj * c.ny;
+    };
+    const compress = (set: Contact[]) => {
+      for (let it = 0; it < 200; it++) {
+        let maxDj = 0;
+        for (const c of set) {
+          const vrel = approach(c);
+          if (vrel <= 0) continue;
+          const dj = vrel / 2;
+          c.acc += dj;
+          apply(c, dj);
+          if (dj > maxDj) maxDj = dj;
+        }
+        if (maxDj < 1e-10) break;
+      }
+    };
+
+    for (let round = 0; round < 80; round++) {
+      const active = contacts.filter((c) => approach(c) > 1e-9);
+      if (active.length === 0) break;
+      for (const c of active) c.acc = 0;
+      compress(active);
+      // Restitution nur beim ersten Zusammenstoß eines Kontakts; erneute Annäherung wird plastisch aufgelöst
+      for (const c of active) {
+        if (!c.restituted) {
+          apply(c, e * c.acc);
+          c.restituted = true;
+        }
+      }
+      compress(active);
+    }
+
+    // Energieschranke: Gruppen-Energie darf nicht zunehmen (impulserhaltende Skalierung um den Schwerpunkt)
+    const energyAfter = kinetic();
+    if (energyAfter > energyBefore && energyAfter > 1e-12) {
+      let cx = 0;
+      let cy = 0;
+      for (const m of members) {
+        cx += m.vx / members.length;
+        cy += m.vy / members.length;
+      }
+      const cmEnergy = members.length * (cx * cx + cy * cy);
+      const rel = energyAfter - cmEnergy;
+      const allowed = Math.max(0, energyBefore - cmEnergy);
+      const k = rel > 1e-12 ? Math.sqrt(allowed / rel) : 1;
+      for (const m of members) {
+        m.vx = cx + (m.vx - cx) * k;
+        m.vy = cy + (m.vy - cy) * k;
+      }
+    }
+
+    // Ereignisse: auslösendes Paar zuerst (wichtig für "erster Kontakt"), dann alle übrigen
+    const first = contacts.find((c) => (c.a.id === i && c.b.id === j) || (c.a.id === j && c.b.id === i));
+    if (first) this.events.push({ type: 'ballBall', a: first.a.id, b: first.b.id, speed: (2 * first.total) / (1 + e) });
+    for (const c of contacts) {
+      if (c === first || c.total < 1e-6) continue;
+      this.events.push({ type: 'ballBall', a: c.a.id, b: c.b.id, speed: (2 * c.total) / (1 + e) });
     }
   }
 

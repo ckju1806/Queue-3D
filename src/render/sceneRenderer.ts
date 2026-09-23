@@ -32,6 +32,7 @@ export class SceneRenderer {
   private readonly balls: BallViews;
   private readonly cue: THREE.Group;
   private readonly overlay: AimOverlay;
+  private readonly lampFixtures: THREE.Group;
   private readonly raycaster = new THREE.Raycaster();
   private readonly plane: THREE.Plane;
   private readonly tmpV = new THREE.Vector3();
@@ -49,7 +50,7 @@ export class SceneRenderer {
     this.renderer.setPixelRatio(low ? 0.75 : Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.0;
     this.renderer.shadowMap.enabled = !low;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
@@ -64,7 +65,7 @@ export class SceneRenderer {
     const R = session.world.ballRadius;
     this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -R);
 
-    buildLounge(this.scene);
+    this.lampFixtures = buildLounge(this.scene).lampFixtures;
     this.scene.add(buildTable(g, createTableMaterials()));
     this.balls = new BallViews(R);
     this.scene.add(this.balls.group);
@@ -105,6 +106,8 @@ export class SceneRenderer {
     const s = this.session;
     this.cameraCtl.autoRotate = s.state === 'menu';
     this.cameraCtl.update(dt);
+    // Bei steilem Blick von oben würde die Lampe den Tisch verdecken
+    this.lampFixtures.visible = this.cameraCtl.polar > 0.62;
 
     const cueBall = s.world.balls[CUE_BALL];
     this.balls.update(s.world, cueBall.onTable ? null : s.cueBallPosition());

@@ -153,7 +153,8 @@ check('Fortsetzen ohne Stoß', !(await page.evaluate(() => window.__poolLounge.s
 
 // Gegen Computer
 await page.keyboard.press('Escape');
-await page.click('[data-action="to-menu"]');
+await waitFor(async () => (await state()) === 'paused');
+await page.click('#screen-pause [data-action="to-menu"]');
 await page.waitForTimeout(500);
 await page.click('[data-action="diff-medium"]');
 await page.click('[data-action="start-ai"]');

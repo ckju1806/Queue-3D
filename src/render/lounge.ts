@@ -10,6 +10,8 @@ import { TABLE_DIMENSIONS } from './tableMesh';
 
 export interface LoungeLights {
   key: THREE.DirectionalLight;
+  /** Sichtbare Lampenkörper (werden bei steiler Draufsicht ausgeblendet; das Licht bleibt). */
+  lampFixtures: THREE.Group;
 }
 
 export function buildLounge(scene: THREE.Scene): LoungeLights {
@@ -93,39 +95,42 @@ export function buildLounge(scene: THREE.Scene): LoungeLights {
   const brass = new THREE.MeshStandardMaterial({ color: '#8c6a37', roughness: 0.35, metalness: 0.85 });
   const shadeMat = new THREE.MeshStandardMaterial({ color: '#0f3b36', roughness: 0.45, metalness: 0.3, side: THREE.DoubleSide });
   const shadeInner = new THREE.MeshStandardMaterial({ color: '#fff4dc', emissive: '#ffe2a8', emissiveIntensity: 1.2, side: THREE.BackSide });
+  const lampFixtures = new THREE.Group();
+  lampFixtures.name = 'lamp-fixtures';
+  scene.add(lampFixtures);
   const bar = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.035, 0.08), brass);
   bar.position.set(0, lampY + 0.2, 0);
-  scene.add(bar);
+  lampFixtures.add(bar);
   for (const x of [-0.8, 0.8]) {
     const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, roomH - lampY - 0.2 + floorY, 8), brass);
     rod.position.set(x, lampY + 0.2 + (roomH + floorY - lampY - 0.2) / 2, 0);
-    scene.add(rod);
+    lampFixtures.add(rod);
   }
   for (const x of [-0.68, 0, 0.68]) {
     const shade = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.2, 0.17, 32, 1, true), shadeMat);
     shade.position.set(x, lampY + 0.085, 0);
-    scene.add(shade);
+    lampFixtures.add(shade);
     const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.195, 0.165, 32, 1, true), shadeInner);
     inner.position.copy(shade.position);
-    scene.add(inner);
+    lampFixtures.add(inner);
     const bulb = new THREE.Mesh(
       new THREE.SphereGeometry(0.035, 16, 12),
       new THREE.MeshStandardMaterial({ color: '#fff7e6', emissive: '#fff1d0', emissiveIntensity: 3 }),
     );
     bulb.position.set(x, lampY + 0.06, 0);
-    scene.add(bulb);
+    lampFixtures.add(bulb);
     const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.12, 8), brass);
     stem.position.set(x, lampY + 0.2 - 0.03, 0);
-    scene.add(stem);
+    lampFixtures.add(stem);
 
-    const spot = new THREE.SpotLight('#ffe7c2', 9, 4, 0.95, 0.75, 2);
+    const spot = new THREE.SpotLight('#ffe7c2', 5, 4, 0.95, 0.75, 2);
     spot.position.set(x, lampY + 0.05, 0);
     spot.target.position.set(x, 0, 0);
     scene.add(spot, spot.target);
   }
 
   // Hauptlicht mit weichen Schatten (fast senkrecht von oben)
-  const key = new THREE.DirectionalLight('#fff3e0', 1.9);
+  const key = new THREE.DirectionalLight('#fff3e0', 1.55);
   key.position.set(0.35, 4, 0.55);
   key.target.position.set(0, 0, 0);
   key.castShadow = true;
@@ -146,5 +151,5 @@ export function buildLounge(scene: THREE.Scene): LoungeLights {
   const hemi = new THREE.HemisphereLight('#ffe9cc', '#1a1410', 0.35);
   scene.add(hemi);
 
-  return { key };
+  return { key, lampFixtures };
 }

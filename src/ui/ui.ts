@@ -110,6 +110,10 @@ export class GameUI {
 
     session.on((e) => {
       switch (e.type) {
+        case 'stateChanged':
+          // Menüs sofort (nicht erst im nächsten Frame) an den neuen Zustand anpassen
+          this.renderStatic();
+          break;
         case 'gameStarted':
           this.pocketedOrder = [];
           this.gameOverInfo = null;

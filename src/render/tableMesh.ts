@@ -91,16 +91,16 @@ export function railInnerContour(g: TableGeometry): { contour: Vec2[]; arcs: Vec
 export function createTableMaterials(): TableMaterials {
   const feltTex = createFeltTexture();
   const felt = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#12706b'),
+    color: new THREE.Color('#0b5754'),
     map: feltTex,
-    roughness: 0.93,
+    roughness: 0.95,
     metalness: 0,
-    sheen: 0.6,
-    sheenColor: new THREE.Color('#4fb3a8'),
-    sheenRoughness: 0.75,
+    sheen: 0.35,
+    sheenColor: new THREE.Color('#2f8f86'),
+    sheenRoughness: 0.8,
   });
   const cushion = felt.clone();
-  cushion.color = new THREE.Color('#0f625d');
+  cushion.color = new THREE.Color('#094a47');
   const woodTex = createWoodTexture('#5a2e17', '#1f0d05', 11);
   const wood = new THREE.MeshPhysicalMaterial({
     map: woodTex,

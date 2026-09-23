@@ -47,6 +47,11 @@ export class CameraController {
     this.apply();
   }
 
+  /** Aktueller Polarwinkel (0 = senkrecht von oben). */
+  get polar(): number {
+    return this.current.polar;
+  }
+
   /** Nach Größenänderung des Fensters aufrufen. */
   onResize(): void {
     const oldPersp = this.fitDistance.perspective;

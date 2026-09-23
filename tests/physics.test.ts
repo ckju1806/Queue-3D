@@ -213,3 +213,53 @@ describe('Stoßfunktion', () => {
     expect(shotSpeed(1, config.shot)).toBe(config.shot.maxSpeed);
   });
 });
+
+describe('Gleichzeitige Stöße (Kugeln in Kontakt)', () => {
+  const kinetic = (world: ReturnType<typeof makeWorld>['world']) =>
+    world.balls.filter((b) => b.onTable).reduce((s, b) => s + 0.5 * (b.vx * b.vx + b.vy * b.vy), 0);
+
+  it('Anstoß bricht das Dreieck realistisch auf, ohne Energie zu erzeugen', () => {
+    for (const seed of [1, 2, 3]) {
+      const { world, config } = makeWorld();
+      const rack = createRack(world.geometry, R, createRng(seed));
+      for (const p of rack) world.placeBall(p.id, p.x, p.y);
+      const cue = defaultCuePosition(world.geometry);
+      world.placeBall(0, cue.x, cue.y);
+      const v = computeCueVelocity({ x: 1, y: 0.003 }, 1, config.shot);
+      world.setVelocity(0, v.x, v.y);
+      const e0 = kinetic(world);
+      let maxE = e0;
+      for (let i = 0; i < 120; i++) {
+        world.step();
+        maxE = Math.max(maxE, kinetic(world));
+      }
+      expect(maxE).toBeLessThanOrEqual(e0 * (1 + 1e-9));
+      runUntilSettled(world, 40);
+      let moved = 0;
+      for (const p of rack) {
+        const b = world.balls[p.id];
+        if (!b.onTable || Math.hypot(b.x - p.x, b.y - p.y) > 0.1) moved++;
+      }
+      expect(moved).toBeGreaterThanOrEqual(10);
+    }
+  });
+
+  it('Kombination über eingefrorene Kugeln: die vordere Kugel läuft weiter', () => {
+    const { world } = makeWorld({ rollingDeceleration: 0, linearDamping: 0 });
+    world.placeBall(0, -0.5, 0);
+    world.placeBall(1, 0, 0);
+    world.placeBall(2, 2 * R + 0.0002, 0); // eingefroren an Kugel 1
+    world.setVelocity(0, 2, 0);
+    runSteps(world, 100);
+    // Impuls wird in Stoßrichtung erhalten, Energie nimmt nicht zu
+    const px = world.balls[0].vx + world.balls[1].vx + world.balls[2].vx;
+    expect(px).toBeCloseTo(2, 6);
+    expect(kinetic(world)).toBeLessThanOrEqual(0.5 * 4 + 1e-9);
+    // Die vordere Kugel bekommt den Großteil der Bewegung
+    expect(world.balls[2].vx).toBeGreaterThan(1.5);
+    expect(world.balls[2].vx).toBeGreaterThan(world.balls[1].vx);
+    // Das auslösende Paar wird als erstes Ereignis gemeldet (erster Kontakt der Weißen)
+    const first = world.drainEvents().find((ev) => ev.type === 'ballBall');
+    expect(first).toMatchObject({ type: 'ballBall', a: 0, b: 1 });
+  });
+});
