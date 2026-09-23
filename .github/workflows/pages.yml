@@ -1,0 +1,61 @@
+# Baut Pool Lounge 3D und veröffentlicht es über GitHub Pages.
+# Einmalig nötig: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Nur eine Veröffentlichung gleichzeitig; laufende Deployments werden nicht abgebrochen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Tests und Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v5
+
+      - name: Node.js einrichten
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Pakete installieren
+        run: npm ci
+
+      - name: Tests ausführen
+        run: npm test
+
+      - name: Produktionsbuild (inkl. Typprüfung)
+        run: npm run build
+
+      - name: Pages konfigurieren
+        uses: actions/configure-pages@v5
+
+      - name: Build hochladen
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    name: Veröffentlichen
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
